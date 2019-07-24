@@ -14,6 +14,7 @@ import kamedon.com.imageprocessingsample2019.page.collision.square.CollisionSqua
 import kamedon.com.imageprocessingsample2019.page.frame.FrameActivity
 import kamedon.com.imageprocessingsample2019.page.frame.FrameUIActivity
 import kamedon.com.imageprocessingsample2019.page.rotation.debug.FrameDebugActivity
+import kamedon.com.imageprocessingsample2019.page.rotation.frame.FrameRotationActivity
 
 
 /**
@@ -25,7 +26,8 @@ sealed class Page(val activity: Class<out Activity>) {
 }
 
 //object RotationPage : Page(RotationActivity::class.java)
-//object FrameRotationPage : Page(FrameRotationActivity::class.java)
+object FrameRotationPage : Page(FrameRotationActivity::class.java)
+
 object FrameDebugPage : Page(FrameDebugActivity::class.java)
 
 //object TranslationPage : Page(TranslationActivity::class.java)
@@ -38,7 +40,7 @@ object FramePage : Page(FrameActivity::class.java)
 
 class PageAdapter(val context: Context) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
     //    val pages = listOf(RotationPage, FrameRotationPage, TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameUIPage, FrameDebugPage, EditPage)
-    val pages = listOf(CollisionCirclePage, CollisionSquarePage, FramePage, FrameDebugPage)
+    val pages = listOf(CollisionCirclePage, CollisionSquarePage, FramePage, FrameDebugPage, FrameRotationPage)
     val inflater = LayoutInflater.from(context)!!
 
 
