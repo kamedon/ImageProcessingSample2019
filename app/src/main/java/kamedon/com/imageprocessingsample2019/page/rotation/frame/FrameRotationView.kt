@@ -87,11 +87,11 @@ class FrameRotationView @JvmOverloads constructor(
         canvas.drawBitmap(baseBitmap, baseMatrix, Paint())
         canvas.drawBitmap(rotationBitmap, rotationMatrix, paint)
         canvas.drawBitmap(noScaleBitmap, matrix1, paint)
-//        canvas.drawRect(rectF, Paint().apply {
-//            color = Color.GREEN
-//            style = Paint.Style.STROKE
-//            strokeWidth = 10f
-//        })
+        canvas.drawRect(rectF, Paint().apply {
+            color = Color.GREEN
+            style = Paint.Style.STROKE
+            strokeWidth = 10f
+        })
 
     }
 
@@ -114,6 +114,7 @@ class FrameRotationView @JvmOverloads constructor(
         rectF.right = (listOf(fx(-cx, -cy, rad), fx(-cx, cy, rad), fx(cx, -cy, rad), fx(cx, cy, rad)).max()!! + centerX).toFloat()
         rectF.bottom = (listOf(fy(-cx, -cy, rad), fy(-cx, cy, rad), fy(cx, -cy, rad), fy(cx, cy, rad)).max()!! + centerY).toFloat()
 
+        //外接する四角の大きさまで拡大する必要がある
         val s = Math.max(rectF.width() / rotationBitmap.width.toFloat(), rectF.height() / rotationBitmap.height.toFloat())
         rotationMatrix.reset()
         rotationMatrix.postRotate(this.degree, rotationBitmap.width / 2f, rotationBitmap.height / 2f)
