@@ -15,6 +15,7 @@ import kamedon.com.imageprocessingsample2019.page.frame.FrameActivity
 import kamedon.com.imageprocessingsample2019.page.frame.FrameUIActivity
 import kamedon.com.imageprocessingsample2019.page.rotation.debug.FrameDebugActivity
 import kamedon.com.imageprocessingsample2019.page.rotation.frame.FrameRotationActivity
+import kamedon.com.imageprocessingsample2019.page.translate.TranslationActivity
 
 
 /**
@@ -25,22 +26,17 @@ sealed class Page(val activity: Class<out Activity>) {
     fun title() = activity.simpleName
 }
 
-//object RotationPage : Page(RotationActivity::class.java)
 object FrameRotationPage : Page(FrameRotationActivity::class.java)
-
 object FrameDebugPage : Page(FrameDebugActivity::class.java)
-
-//object TranslationPage : Page(TranslationActivity::class.java)
+object TranslationPage : Page(TranslationActivity::class.java)
 object CollisionCirclePage : Page(CollisionCircleActivity::class.java)
-
 object CollisionSquarePage : Page(CollisionSquareActivity::class.java)
 object FramePage : Page(FrameActivity::class.java)
-//object FrameUIPage : Page(FrameUIActivity::class.java)
 
 
 class PageAdapter(val context: Context) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
     //    val pages = listOf(RotationPage, FrameRotationPage, TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameUIPage, FrameDebugPage, EditPage)
-    val pages = listOf(CollisionCirclePage, CollisionSquarePage, FramePage, FrameDebugPage, FrameRotationPage)
+    val pages = listOf(TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameDebugPage, FrameRotationPage)
     val inflater = LayoutInflater.from(context)!!
 
 

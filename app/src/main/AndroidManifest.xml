@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".page.rotation.frame.FrameRotationActivity"></activity>
+        <activity android:name=".page.translate.TranslationActivity"></activity>
+        <activity android:name=".page.rotation.frame.FrameRotationActivity" />
         <activity android:name=".page.rotation.debug.FrameDebugActivity" />
         <activity android:name=".page.frame.FrameActivity" />
         <activity android:name=".page.frame.FrameUIActivity" />
