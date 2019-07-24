@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import kamedon.com.imageprocessingsample2019.R
 import kamedon.com.imageprocessingsample2019.page.collision.circle.CollisionCircleActivity
+import kamedon.com.imageprocessingsample2019.page.collision.square.CollisionSquareActivity
 
 
 /**
@@ -25,15 +26,16 @@ sealed class Page(val activity: Class<out Activity>) {
 //object FrameDebugPage : Page(FrameDebugActivity::class.java)
 //object TranslationPage : Page(TranslationActivity::class.java)
 object CollisionCirclePage : Page(CollisionCircleActivity::class.java)
-//object CollisionSquarePage : Page(CollisionSquareActivity::class.java)
+
+object CollisionSquarePage : Page(CollisionSquareActivity::class.java)
 //object FramePage : Page(FrameActivity::class.java)
 //object FrameUIPage : Page(FrameUIActivity::class.java)
 //object EditPage : Page(EditActivity::class.java)
 
 
 class PageAdapter(val context: Context) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
-//    val pages = listOf(RotationPage, FrameRotationPage, TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameUIPage, FrameDebugPage, EditPage)
-    val pages = listOf(CollisionCirclePage)
+    //    val pages = listOf(RotationPage, FrameRotationPage, TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameUIPage, FrameDebugPage, EditPage)
+    val pages = listOf(CollisionCirclePage, CollisionSquarePage)
     val inflater = LayoutInflater.from(context)!!
 
 
