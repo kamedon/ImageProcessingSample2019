@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".page.collision.square.CollisionSquareActivity"></activity>
-        <activity android:name=".page.collision.circle.CollisionCircleActivity"></activity>
+        <activity android:name=".page.rotation.debug.FrameDebugActivity"></activity>
+        <activity android:name=".page.frame.FrameActivity"></activity>
+        <activity android:name=".page.frame.FrameUIActivity" />
+        <activity android:name=".page.edit.EditActivity" />
+        <activity android:name=".page.collision.square.CollisionSquareActivity" />
+        <activity android:name=".page.collision.circle.CollisionCircleActivity" />
         <activity android:name=".page.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
