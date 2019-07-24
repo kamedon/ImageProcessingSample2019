@@ -6,10 +6,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".page.MainActivity">
+        tools:context=".page.collision.circle.CollisionCircleActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <kamedon.com.imageprocessingsample2019.page.collision.circle.ImageCollisionCircleView
+            android:id="@+id/surfaceView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginLeft="0dp"
