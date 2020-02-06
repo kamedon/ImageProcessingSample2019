@@ -1,13 +1,12 @@
 package kamedon.com.imageprocessingsample2019.page.photo
 
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ScaleGestureDetector
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.wada811.databinding.dataBinding
 import kamedon.com.imageprocessingsample2019.R
 import kamedon.com.imageprocessingsample2019.databinding.ActivityPhotoActvityBinding
-import kotlinx.android.synthetic.main.activity_photo_actvity.view.*
 
 class PhotoActivity : AppCompatActivity() {
 
@@ -18,6 +17,13 @@ class PhotoActivity : AppCompatActivity() {
 
         val cat = BitmapFactory.decodeResource(resources, R.drawable.cat)
         binding.photoView.photo(cat)
+        binding.photoView.onTouchItem = { x, y, items ->
+            Toast.makeText(
+                this,
+                "touch: ${items.map { "[${it.x} , ${it.y}] ${it.name}" }.joinToString("\n ")}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
     }
 }

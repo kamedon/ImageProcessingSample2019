@@ -60,11 +60,6 @@ class BitmapLayer() : BitmapCanvasDrawable {
 
 }
 
-interface Collidable<T> {
-    fun collide(x: Float, y: Float): List<T>
-    fun collide(point: PointF) = collide(point.x, point.y)
-}
-
 class BackgroundLayer : CanvasDrawable {
     override var width = 0
     override var height = 0
@@ -120,11 +115,17 @@ class BackgroundLayer : CanvasDrawable {
 }
 
 class PersonLocationLayer(val layer: BitmapCanvasDrawable = BitmapLayer()) :
-    BitmapCanvasDrawable by layer,
-    Collidable<PersonLocation> {
+    BitmapCanvasDrawable by layer {
 
     var scale: Float = 1f
-    val list = mutableListOf<PersonLocation>(PersonLocation(100, 100))
+    val list = mutableListOf<PersonLocation>(
+        PersonLocation(100, 100),
+        PersonLocation(100, 300),
+        PersonLocation(300, 100),
+        PersonLocation(300, 300),
+        PersonLocation(250, 255),
+        PersonLocation(255, 250)
+    )
     val paint = Paint().apply {
         color = Color.BLUE
         isAntiAlias = true
@@ -142,12 +143,24 @@ class PersonLocationLayer(val layer: BitmapCanvasDrawable = BitmapLayer()) :
         }
     }
 
-    override fun collide(x: Float, y: Float): List<PersonLocation> {
-        return listOf()
-    }
-
     fun postScale(s: Float) {
         this.scale /= s
+    }
+
+    fun collide(x: Float, y: Float, matrix: Matrix): List<PersonLocation> {
+        return list.filter {
+            var pl = floatArrayOf(it.x.toFloat(), it.y.toFloat())
+            matrix.mapPoints(pl)
+            val dx = (pl[0] - x)
+            val dy = (pl[1] - y)
+
+            Log.d("test", "[=== colide ===]")
+            Log.d("test", "colide:target: $x , $y")// ===> ${target[0]} , ${target[1]}")
+            Log.d("test", "colide:pl:  ${it.x} , ${it.y} ===> ${pl[0]}, ${pl[1]}")
+            Log.d("test", "colide: $dx , $dy")
+            dx * dx + dy * dy <= 900
+        }
+
     }
 }
 
@@ -165,7 +178,7 @@ class UILayer(val layer: CanvasDrawable = BitmapLayer()) : CanvasDrawable by lay
 }
 
 class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
-    Collidable<PersonLocation>, BitmapCanvasDrawable by layer {
+    BitmapCanvasDrawable by layer {
 
     var offsetX: Float = 0F
     var offsetY: Float = 0F
@@ -193,6 +206,7 @@ class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
 
         val w = backgroundLayer.fitWidth
         val h = backgroundLayer.fitHeight
+        Log.d("test", "s: ${backgroundLayer.fitScale}")
         Log.d("test", "W: $w / $width")
         Log.d("test", "H: $h / $height")
         this.offsetX = (width - w) / 2
@@ -220,8 +234,13 @@ class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
     }
 
 
-    override fun collide(x: Float, y: Float): List<PersonLocation> {
-        val personLocations = personLocationLayer.collide(x, y)
+    fun collide(x: Float, y: Float): List<PersonLocation> {
+
+        val personLocations = personLocationLayer.collide(
+            x,
+            y,
+            matrix
+        )
         uiLayer.touchPersonLocations(personLocations)
         return personLocations
     }
@@ -235,6 +254,11 @@ class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
     fun postTranslate(diffX: Float, diffY: Float) {
         matrix.postTranslate(diffX, diffY)
         update()
+    }
+
+    fun touch(x: Float, y: Float): List<PersonLocation> {
+        val items = collide(x, y)
+        return items
     }
 
 
@@ -254,6 +278,8 @@ class PhotoView @JvmOverloads constructor(
     var scaleEndTimestamp: Long = Long.MAX_VALUE
 
     val scaleGestureDetector = ScaleGestureDetector(context, listener)
+
+    var onTouchItem: ((x: Float, y: Float, items: List<PersonLocation>) -> Unit)? = null
     var prevX: Float = 0f
     var pervY: Float = 0f
 
@@ -261,10 +287,18 @@ class PhotoView @JvmOverloads constructor(
     init {
         holder.addCallback(this)
         setOnTouchListener { v, event ->
+            if (event.pointerCount == 1 && event.action === MotionEvent.ACTION_DOWN) {
+                val items = layout.touch(event.x, event.y)
+                if (items.isNotEmpty()) {
+                    onTouchItem?.invoke(event.x, event.y, items)
+                    return@setOnTouchListener true
+                }
+
+            }
             if (event.pointerCount == 1 && !scaleGestureDetector.isInProgress) {
+
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        Log.d("test", "DOWN")
                         prevX = event.x
                         pervY = event.y
                         return@setOnTouchListener true
@@ -297,6 +331,7 @@ class PhotoView @JvmOverloads constructor(
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
+        layout.destroy()
     }
 
     fun update() {
