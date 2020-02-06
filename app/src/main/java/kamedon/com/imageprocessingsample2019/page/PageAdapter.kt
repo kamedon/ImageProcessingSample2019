@@ -13,6 +13,7 @@ import kamedon.com.imageprocessingsample2019.page.collision.circle.CollisionCirc
 import kamedon.com.imageprocessingsample2019.page.collision.square.CollisionSquareActivity
 import kamedon.com.imageprocessingsample2019.page.frame.FrameActivity
 import kamedon.com.imageprocessingsample2019.page.frame.FrameUIActivity
+import kamedon.com.imageprocessingsample2019.page.photo.PhotoActivity
 import kamedon.com.imageprocessingsample2019.page.rotation.debug.FrameDebugActivity
 import kamedon.com.imageprocessingsample2019.page.rotation.frame.FrameRotationActivity
 import kamedon.com.imageprocessingsample2019.page.translate.TranslationActivity
@@ -32,22 +33,39 @@ object TranslationPage : Page(TranslationActivity::class.java)
 object CollisionCirclePage : Page(CollisionCircleActivity::class.java)
 object CollisionSquarePage : Page(CollisionSquareActivity::class.java)
 object FramePage : Page(FrameActivity::class.java)
+object PhotoPage : Page(PhotoActivity::class.java)
 
 
 class PageAdapter(val context: Context) : RecyclerView.Adapter<PageAdapter.ViewHolder>() {
     //    val pages = listOf(RotationPage, FrameRotationPage, TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameUIPage, FrameDebugPage, EditPage)
-    val pages = listOf(TranslationPage, CollisionCirclePage, CollisionSquarePage, FramePage, FrameDebugPage, FrameRotationPage)
+    val pages = listOf(
+        TranslationPage,
+        CollisionCirclePage,
+        CollisionSquarePage,
+        FramePage,
+        FrameDebugPage,
+        FrameRotationPage,
+        PhotoPage
+    )
     val inflater = LayoutInflater.from(context)!!
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(pages[position])
-        holder.textView.setOnClickListener { context.startActivity(Intent(context, pages[position].activity)) }
+        holder.textView.setOnClickListener {
+            context.startActivity(
+                Intent(
+                    context,
+                    pages[position].activity
+                )
+            )
+        }
     }
 
     override fun getItemCount(): Int = pages.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(inflater.inflate(R.layout.list_page, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(inflater.inflate(R.layout.list_page, parent, false))
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
