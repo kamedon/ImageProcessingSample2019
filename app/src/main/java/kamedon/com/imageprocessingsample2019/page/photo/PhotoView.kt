@@ -280,6 +280,8 @@ class PhotoView @JvmOverloads constructor(
     val scaleGestureDetector = ScaleGestureDetector(context, listener)
 
     var onTouchItem: ((x: Float, y: Float, items: List<PersonLocation>) -> Unit)? = null
+    var uiReset: (() -> Unit)? = null
+
     var prevX: Float = 0f
     var pervY: Float = 0f
 
@@ -287,25 +289,31 @@ class PhotoView @JvmOverloads constructor(
     init {
         holder.addCallback(this)
         setOnTouchListener { v, event ->
-            if (event.pointerCount == 1 && event.action === MotionEvent.ACTION_DOWN) {
-                val items = layout.touch(event.x, event.y)
+            val x = event.x
+            val y = event.y
+
+            if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_DOWN) {
+                prevX = x
+                pervY = y
+
+                val items = layout.touch(x, y)
                 if (items.isNotEmpty()) {
-                    onTouchItem?.invoke(event.x, event.y, items)
+                    onTouchItem?.invoke(x, y, items)
                     return@setOnTouchListener true
                 }
-
             }
+
+
             if (event.pointerCount == 1 && !scaleGestureDetector.isInProgress) {
 
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        prevX = event.x
-                        pervY = event.y
                         return@setOnTouchListener true
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        val currentX = event.x
-                        val currentY = event.y
+                        uiReset?.invoke()
+                        val currentX = x
+                        val currentY = y
                         val diffX = currentX - prevX;
                         val diffY = currentY - pervY;
                         Log.d("test", "MOVE $diffX / $diffY")
@@ -319,8 +327,7 @@ class PhotoView @JvmOverloads constructor(
                 }
                 return@setOnTouchListener false
             }
-            val b = scaleGestureDetector.onTouchEvent(event)
-            return@setOnTouchListener b
+            return@setOnTouchListener scaleGestureDetector.onTouchEvent(event)
 
 
         }

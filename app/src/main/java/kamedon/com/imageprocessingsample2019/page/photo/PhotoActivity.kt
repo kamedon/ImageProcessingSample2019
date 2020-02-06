@@ -18,11 +18,10 @@ class PhotoActivity : AppCompatActivity() {
         val cat = BitmapFactory.decodeResource(resources, R.drawable.cat)
         binding.photoView.photo(cat)
         binding.photoView.onTouchItem = { x, y, items ->
-            Toast.makeText(
-                this,
-                "touch: ${items.map { "[${it.x} , ${it.y}] ${it.name}" }.joinToString("\n ")}",
-                Toast.LENGTH_SHORT
-            ).show()
+            binding.uiView.showPopup(x, y, items)
+        }
+        binding.photoView.uiReset= {
+            binding.uiView.hidePopup()
         }
 
     }

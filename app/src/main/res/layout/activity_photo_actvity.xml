@@ -17,6 +17,15 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <kamedon.com.imageprocessingsample2019.page.photo.UIView
+            android:id="@+id/uiView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/photoView"
+            app:layout_constraintLeft_toLeftOf="@id/photoView"
+            app:layout_constraintRight_toRightOf="@id/photoView"
+            app:layout_constraintTop_toTopOf="@id/photoView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
