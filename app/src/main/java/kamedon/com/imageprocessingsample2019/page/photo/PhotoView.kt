@@ -256,9 +256,32 @@ class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
         update()
     }
 
+    var prevDegree = Float.MAX_VALUE
+    fun postRotate(x: Float, y: Float, radian1: Double, radian2: Double) {
+        val degree1 = ((radian1 * 180 / Math.PI) + 180).toFloat()
+        val degree2 = ((radian2 * 180 / Math.PI) + 180).toFloat()
+        val diff1 = Math.min(degree1 - prevDegree, degree1 - prevDegree + 360)
+        val diff2 = Math.min(degree2 - prevDegree, degree2 - prevDegree + 360)
+
+        Log.d("degree", "deg: $prevDegree , $degree1 , $degree2")
+        Log.d("degree", "deg:diff:  $diff1, $diff2")
+        if (prevDegree != Float.MAX_VALUE) {
+            matrix.postRotate(Math.max(diff1, diff2), x, y)
+        }
+        prevDegree = if (diff1 > diff2) {
+            degree1
+        } else {
+            degree2
+        }
+    }
+
     fun touch(x: Float, y: Float): List<PersonLocation> {
         val items = collide(x, y)
         return items
+    }
+
+    fun reStart() {
+        prevDegree = Float.MAX_VALUE
     }
 
 
@@ -270,65 +293,82 @@ class PhotoView @JvmOverloads constructor(
 
     val layout = PhotoCanvasLayout()
     val listener = ScaleGestureListener(callback = { x, y, scale ->
+
+        val rad1 = Math.atan2((currentY - y).toDouble(), (currentX - x).toDouble())
+        val rad2 = Math.atan2((current2X - y).toDouble(), (current2X - x).toDouble())
+
         layout.postScale(x, y, scale)
+        layout.postRotate(x, y, rad1, rad2)
+
         update()
     }, endCallBack = {
         scaleEndTimestamp = System.currentTimeMillis()
     })
-    var scaleEndTimestamp: Long = Long.MAX_VALUE
+    var scaleEndTimestamp: Long = 0
 
     val scaleGestureDetector = ScaleGestureDetector(context, listener)
 
     var onTouchItem: ((x: Float, y: Float, items: List<PersonLocation>) -> Unit)? = null
     var uiReset: (() -> Unit)? = null
 
+    var currentX: Float = 0f
+    var currentY: Float = 0f
+    var current2X: Float = 0f
+    var current2Y: Float = 0f
+
     var prevX: Float = 0f
-    var pervY: Float = 0f
+    var prevY: Float = 0f
+    var pointId: Int = 0
+    var pointId2: Int = 0
 
 
     init {
         holder.addCallback(this)
         setOnTouchListener { v, event ->
-            val x = event.x
-            val y = event.y
 
             if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_DOWN) {
-                prevX = x
-                pervY = y
+                pointId = event.getPointerId(0)
+                currentX = event.getX(pointId)
+                currentY = event.getY(pointId)
+                prevX = currentX
+                prevY = currentY
+                layout.reStart()
 
-                val items = layout.touch(x, y)
+                val items = layout.touch(currentX, currentY)
                 if (items.isNotEmpty()) {
-                    onTouchItem?.invoke(x, y, items)
+                    onTouchItem?.invoke(currentX, currentY, items)
                     return@setOnTouchListener true
                 }
             }
 
+            if (event.pointerCount == 2) {
+                pointId2 = event.getPointerId(1)
+                current2X = event.getX(pointId2)
+                current2Y = event.getY(pointId2)
+            }
 
+
+            currentX = event.getX(pointId)
+            currentY = event.getY(pointId)
+
+            scaleGestureDetector.onTouchEvent(event)
             if (event.pointerCount == 1 && !scaleGestureDetector.isInProgress) {
-
                 when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        return@setOnTouchListener true
-                    }
                     MotionEvent.ACTION_MOVE -> {
                         uiReset?.invoke()
-                        val currentX = x
-                        val currentY = y
                         val diffX = currentX - prevX;
-                        val diffY = currentY - pervY;
+                        val diffY = currentY - prevY;
                         Log.d("test", "MOVE $diffX / $diffY")
-                        if (Math.abs(scaleEndTimestamp - System.currentTimeMillis()) > 100) {
+                        if (System.currentTimeMillis() - scaleEndTimestamp > 200) {
                             layout.postTranslate(diffX, diffY)
                             update()
                         }
                         prevX = currentX
-                        pervY = currentY
+                        prevY = currentY
                     }
                 }
-                return@setOnTouchListener false
             }
-            return@setOnTouchListener scaleGestureDetector.onTouchEvent(event)
-
+            return@setOnTouchListener true
 
         }
     }
@@ -371,13 +411,14 @@ class ScaleGestureListener(
     ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
     var previousScale = 1f
-    var focusX: Float = 0f
-    var focusY: Float = 0f
+    var firstFocusX: Float = 0f
+    var firstFocusY: Float = 0f
+
 
     override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
         previousScale = 1f
-        focusX = detector.focusX;
-        focusY = detector.focusY;
+        firstFocusX = detector.focusX;
+        firstFocusY = detector.focusY;
         return super.onScaleBegin(detector)
     }
 
@@ -387,7 +428,12 @@ class ScaleGestureListener(
         val currentScale = detector.scaleFactor
         val scale = 1 - previousScale + currentScale
         Log.d("test", "factor: ${currentScale} , $scale")
-        callback(focusX, focusY, scale)
+
+        val x = detector.focusX
+        val y = detector.focusY
+        val rad = Math.atan2(((y - firstFocusY).toDouble()), ((x - firstFocusX).toDouble()))
+
+        callback(firstFocusX, firstFocusY, scale)
         previousScale = currentScale
 
         return false
