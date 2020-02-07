@@ -259,20 +259,22 @@ class PhotoCanvasLayout(val layer: BitmapCanvasDrawable = BitmapLayer()) :
     var prevDegree = Float.MAX_VALUE
     fun postRotate(x: Float, y: Float, radian1: Double, radian2: Double) {
         val degree1 = ((radian1 * 180 / Math.PI) + 180).toFloat()
-        val degree2 = ((radian2 * 180 / Math.PI) + 180).toFloat()
+//        val degree2 = ((radian2 * 180 / Math.PI) + 180).toFloat()
         val diff1 = Math.min(degree1 - prevDegree, degree1 - prevDegree + 360)
-        val diff2 = Math.min(degree2 - prevDegree, degree2 - prevDegree + 360)
+//        val diff2 = Math.min(degree2 - prevDegree, degree2 - prevDegree + 360)
 
-        Log.d("degree", "deg: $prevDegree , $degree1 , $degree2")
-        Log.d("degree", "deg:diff:  $diff1, $diff2")
+//        Log.d("degree", "deg: $prevDegree , $degree1 , $degree2")
+//        Log.d("degree", "deg:diff:  $diff1, $diff2")
         if (prevDegree != Float.MAX_VALUE) {
-            matrix.postRotate(Math.max(diff1, diff2), x, y)
+//            matrix.postRotate(Math.max(diff1, diff2), x, y)
+            matrix.postRotate(diff1, x, y)
         }
-        prevDegree = if (diff1 > diff2) {
-            degree1
-        } else {
-            degree2
-        }
+        prevDegree = degree1
+//        prevDegree = if (diff1 > diff2) {
+//            degree1
+//        } else {
+//            degree2
+//        }
     }
 
     fun touch(x: Float, y: Float): List<PersonLocation> {
