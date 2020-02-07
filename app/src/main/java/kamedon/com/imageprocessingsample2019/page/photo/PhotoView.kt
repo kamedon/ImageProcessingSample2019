@@ -119,12 +119,17 @@ class PersonLocationLayer(val layer: BitmapCanvasDrawable = BitmapLayer()) :
 
     var scale: Float = 1f
     val list = mutableListOf<PersonLocation>(
-        PersonLocation(100, 100),
-        PersonLocation(100, 300),
+        PersonLocation(120, 300),
         PersonLocation(300, 100),
-        PersonLocation(300, 300),
-        PersonLocation(250, 255),
-        PersonLocation(255, 250)
+        PersonLocation(800, 200),
+        PersonLocation(250, 258),
+        PersonLocation(500, 280),
+        PersonLocation(520, 450),
+        PersonLocation(50, 420),
+        PersonLocation(800, 70),
+        PersonLocation(710, 300),
+        PersonLocation(900, 440),
+        PersonLocation(258, 250)
     )
     val paint = Paint().apply {
         color = Color.BLUE
