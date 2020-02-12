@@ -158,7 +158,7 @@ class PersonLocationLayer(val layer: BitmapCanvasDrawable = BitmapLayer()) :
             Log.d("test", "colide:target: $x , $y")// ===> ${target[0]} , ${target[1]}")
             Log.d("test", "colide:pl:  ${it.x} , ${it.y} ===> ${pl[0]}, ${pl[1]}")
             Log.d("test", "colide: $dx , $dy")
-            dx * dx + dy * dy <= 900
+            dx * dx + dy * dy <= 2000
         }
 
     }
